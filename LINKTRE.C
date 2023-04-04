@@ -6,6 +6,7 @@ struct ndt
  {
   int data;
   struct ndt *next;
+  struct ndt *prev;
   };
   typedef struct ndt node;
 	    node * start;
@@ -17,13 +18,14 @@ void delast(void);
 void delfirst(void);
 void search(void);
 void delbet(void);
+void displayrev(void);
 void main()
 {
 int ch;
 clrscr();
 do
 {
-printf("\n enter \n 1 to create\n 2 to insert\n 3 to display\n 4 to exit\n 5 to print max \n 6 to delete last\n 7 to delete first\n 8 to search data\n 9 to delete data\n");
+printf("\n enter \n 1 to create\n 2 to insert\n 3 to display\n 4 to exit\n 5 to print max \n 6 to delete last\n 7 to delete first\n 8 to search data\n 9 to delete data\n10 to print reverse\n");
 scanf("%d",&ch);
 clrscr();
 switch(ch)
@@ -37,6 +39,7 @@ case 5:maxa(); break;
 case 7:delfirst(); break;
 case 8:search();break;
 case 9:delbet();break;
+case 10:displayrev(); break;
 default:
 printf("\ninvalid input\n");
 break;
@@ -44,72 +47,90 @@ break;
 }
 while(1);
 }
+void displayrev(void)
+{
+node *temp;
+temp=start;
+start->prev=NULL;
+while(temp->next!=NULL)
+{
+ temp=temp->next;
+}
+while(temp!=NULL)
+{ printf("-->%d",temp->data);
+  temp=temp->prev;
+}
+}
 void disp(void)
 {
-node * temp1;
-temp1=start;
-printf("start");
-while(temp1!=NULL)
-{printf("-->%d",temp1->data);
-temp1=temp1->next;
-}
+ node * temp1;
+ temp1=start;
+ printf("start");
+ while(temp1!=NULL)
+ {
+  printf("-->%d",temp1->data);
+  temp1=temp1->next;
+ }
 }
 void insert(void)
 {
-node *temp,*temp1;
-temp1=start;
-while(temp1->next!=NULL)
+ node *temp,*temp1;
+ temp1=start;
+ while(temp1->next!=NULL)
 {
-temp1=temp1->next;
+ temp1=temp1->next;
 }
-temp=(node *)malloc(sizeof(node *));
+ temp=(node *)malloc(sizeof(node *));
 if(temp==NULL)
-{
-printf("\nMemory not allocated\n");
-}
+ {
+ printf("\nMemory not allocated\n");
+ }
 else
 {
-printf("Enter Data\n");
-scanf("%d",&temp->data);
-temp->next=NULL;
-temp1->next=temp;
-printf("press any key to continue");
-getch();
-clrscr();
+ printf("Enter Data\n");
+ scanf("%d",&temp->data);
+ temp->next=NULL;
+ temp->prev=temp1;
+ temp1->next=temp;
+ printf("press any key to continue");
+ getch();
+ clrscr();
 }
 }
 void create(void)
 {
-node *temp;
-temp=(node*)malloc(sizeof(node));
-if(temp!=NULL)
-{
-printf("Enter value of data\n");
-scanf("%d",&temp->data);
-temp->next=NULL;
-start=temp;
-printf("Press any key to continue");
-getch();
-clrscr();
-}
+ node *temp;
+ temp=(node*)malloc(sizeof(node));
+ if(temp!=NULL)
+ {
+  printf("Enter value of data\n");
+  scanf("%d",&temp->data);
+  temp->next=NULL;
+  temp->prev=NULL;
+  start=temp;
+  printf("Press any key to continue");
+  getch();
+  clrscr();
+ }
 else
-{printf("memory could not be allocated by operating");
-}
+ {
+  printf("memory could not be allocated by operating");
+ }
 }
 void maxa()
 {
-node *temp;
-int max=0;
-temp=start;
-while(temp!=NULL)
-{
-if(max<temp->data)
-{
-max=temp->data;
-}
-temp=temp->next;
-}
-printf("\nMAX=%d",max);
+ node *temp;
+ int max=0;
+ temp=start;
+ while(temp!=NULL)
+ {
+  if(max<temp->data)
+  {
+   max=temp->data;
+  }
+  temp=temp->next;
+ }
+ printf("\nMAX=%d",max);
 }
 void delast(void)
 {
@@ -117,48 +138,48 @@ void delast(void)
  temp1=start;
  while(temp1->next->next!=NULL)
  {
- temp1=temp1->next;
+  temp1=temp1->next;
  }
- temp2=temp1->next;
- free(temp2);
- temp1->next=NULL;
+  temp2=temp1->next;
+  free(temp2);
+  temp1->next=NULL;
 }
 
 void delfirst(void)
 {
-node *temp;
-temp=start;
-start=start->next;
-free(temp);
+ node *temp;
+ temp=start;
+ start=start->next;
+ free(temp);
 }
 void search(void)
 {
-node *temp;
-int item,mark=1;
-temp=start;
-printf("\nEnter wanted value");
-scanf("%d",&item);
+ node *temp;
+ int item,mark=1;
+ temp=start;
+ printf("\nEnter wanted value");
+ scanf("%d",&item);
 while(temp->data!=item)
-{
- temp=temp->next;
- mark++;
-}
-printf("\n%d found at %d node",item,mark);
+ {
+  temp=temp->next;
+  mark++;
+ }
+ printf("\n%d found at %d node",item,mark);
 }
 void delbet(void)
 {
-node *temp2, *temp, *temp1;
-int item;
-temp=start;
-printf("\nEnter value to be deleted \n");
-scanf("%d",&item);
-while(temp->next->data!=item)
-{
+ node *temp2, *temp, *temp1;
+ int item;
+ temp=start;
+ printf("\nEnter value to be deleted \n");
+ scanf("%d",&item);
+ while(temp->next->data!=item)
+ {
+  temp=temp->next;
+ }
+ temp1=temp;
  temp=temp->next;
-}
-temp1=temp;
-temp=temp->next;
-temp2=temp->next;
-free(temp);
-temp1->next=temp2;
+ temp2=temp->next;
+ free(temp);
+ temp1->next=temp2;
 }
